@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "__locale": "c",
+        "osrms_file.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "unistd.h": "c"
+    }
+}

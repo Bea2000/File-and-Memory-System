@@ -133,6 +133,13 @@ void os_start_process(int process_id, char* process_name){
     printf("----------------------------------------\n");
     printf("Starting process...\n");
     for (int i = 0; i < 32; i++) {
+        if (global_memory->pcb_tables[i].state == 1 & process_id == global_memory->pcb_tables[i].process_id) {
+            printf("Process Id already exists.\n");
+            printf("----------------------------------------\n");
+            return;
+        }
+    }
+    for (int i = 0; i < 32; i++) {
         if (global_memory->pcb_tables[i].state == 0) {
             global_memory->pcb_tables[i].state = 1;
             global_memory->pcb_tables[i].process_id = process_id;
@@ -260,7 +267,7 @@ int os_read_file(osrmsFile* file_desc, char* dest) {
         uint32_t physical_address = file_desc->address;
 
         uint32_t bytes_to_read = (file_size - bytes_read < 32768) ? (file_size - bytes_read) : 32768;
-        memcpy(buffer, global_memory->physical_memory.bytes[physical_address / 32768], bytes_to_read);
+        memcpy(buffer, global_memory->physical_memory[physical_address / 32768], bytes_to_read);
         fwrite(buffer, 1, bytes_to_read, dest_file);
 
         bytes_read += bytes_to_read;
@@ -302,7 +309,7 @@ int os_write_file(osrmsFile* file_desc, char* src) {
         uint32_t available_space = 32768 - frame_offset;
 
         uint32_t bytes_to_copy = (bytes_to_write < available_space) ? bytes_to_write : available_space;
-        memcpy(global_memory->physical_memory.bytes[physical_address / 32768] + frame_offset, buffer, bytes_to_copy);
+        memcpy(global_memory->physical_memory[physical_address / 32768] + frame_offset, buffer, bytes_to_copy);
 
         bytes_written += bytes_to_copy;
         virtual_address += bytes_to_copy;
@@ -322,7 +329,7 @@ int os_write_file(osrmsFile* file_desc, char* src) {
             }
 
             bytes_to_copy = (bytes_to_write < 32768) ? bytes_to_write : 32768;
-            memcpy(global_memory->physical_memory.bytes[physical_address / 32768], buffer + bytes_written, bytes_to_copy);
+            memcpy(global_memory->physical_memory[physical_address / 32768], buffer + bytes_written, bytes_to_copy);
             bytes_written += bytes_to_copy;
             virtual_address += bytes_to_copy;
             bytes_to_write -= bytes_to_copy;

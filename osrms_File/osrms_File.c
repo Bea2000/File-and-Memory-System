@@ -17,13 +17,13 @@ osrmsMemory* start_osrms_memory() {
 
     fread(memory->pcb_tables, sizeof(PCBTable), 32, file);
 
-    fread(&memory->page_table_bitmap, sizeof(uint8_t), 1, file);
+    fread(&memory->page_table_bitmap, sizeof(uint8_t), 128, file);
 
     fread(memory->second_order_page_tables, sizeof(SecondOrderPageTable), 1024, file);
 
     fread(&memory->frame_bitmap, sizeof(uint8_t), 8192, file);
 
-    fread(memory->physical_memory.bytes, sizeof(uint8_t), (size_t)65536 * 32768, file);
+    fread(memory->physical_memory, sizeof(memory->physical_memory), 1, file);
 
     fclose(file);
     printf("Memory initialized\n");

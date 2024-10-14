@@ -9,12 +9,14 @@
 #include <stddef.h>
 
 // File Table 115B
+#pragma pack(1)
 typedef struct FileTable {
     uint8_t valid;
     char file_name[14];
     uint32_t size;
     uint32_t virtual_address;
 } FileTable;
+#pragma pack()
 
 // PCB table entry 256B
 typedef struct PCBTable {
@@ -30,17 +32,12 @@ typedef struct SecondOrderPageTable {
     uint16_t table[64];
 } SecondOrderPageTable;
 
-// Physical Memory 2GB
-typedef struct PhysicalMemory {
-    uint8_t bytes[65536][32768];
-} PhysicalMemory;
-
 typedef struct osrmsMemory {
     PCBTable pcb_tables[32];
     uint8_t page_table_bitmap[128];
     SecondOrderPageTable second_order_page_tables[1024];
     uint8_t frame_bitmap[8192];
-    PhysicalMemory physical_memory;
+    uint8_t physical_memory[65536][32768];
 } osrmsMemory;
 
 osrmsMemory* start_osrms_memory();
